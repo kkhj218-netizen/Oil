@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
+  <rect width="192" height="192" rx="40" fill="#0b1020"/>
+  <circle cx="96" cy="92" r="44" fill="#111936"/>
+  <path d="M96 44c10 16 14 28 14 40 0 15-9 26-14 26s-14-11-14-26c0-12 4-24 14-40z" fill="#7aa2ff"/>
+  <text x="96" y="156" font-size="28" text-anchor="middle" fill="#e9eeff" font-family="system-ui, -apple-system, sans-serif">JH</text>
+</svg>
