@@ -29,7 +29,6 @@
     .wrap{max-width:1120px;margin:auto;padding:24px}
     header{
       display:flex;
-      justify-content:space-between;
       align-items:center;
       padding:16px;
       border-radius:16px;
@@ -37,6 +36,7 @@
       background:var(--card);
     }
     h1{margin:0;font-size:20px}
+
     .search{margin-top:14px}
     input{
       width:100%;
@@ -47,6 +47,7 @@
       color:var(--text);
       font-size:14px;
     }
+
     .grid{
       margin-top:18px;
       display:grid;
@@ -55,6 +56,7 @@
     @media(min-width:900px){
       .grid{grid-template-columns:1fr 1fr}
     }
+
     .card{
       padding:16px;
       border-radius:16px;
@@ -70,12 +72,20 @@
       color:var(--muted);
       font-size:14px;
     }
+
+    /* details / summary (모든 디바이스 공통 버튼화) */
+    details{margin-top:10px}
     details summary{
+      display:block;
+      padding:10px 12px;
+      border-radius:10px;
+      background:rgba(122,162,255,.08);
+      border:1px solid var(--line);
       cursor:pointer;
       font-weight:700;
       color:var(--accent);
-      margin-top:8px;
     }
+    details[open] summary{margin-bottom:8px}
     details ul{
       margin:10px 0 0 18px;
       padding:0;
@@ -83,30 +93,12 @@
       line-height:1.6;
       font-size:13px;
     }
+
     a{
       color:var(--accent);
       text-decoration:none;
       font-weight:600;
     }
-details{
-  margin-top:10px;
-}
-
-details summary{
-  display:block;
-  padding:10px 12px;
-  border-radius:10px;
-  background:rgba(122,162,255,.08);
-  border:1px solid var(--line);
-  cursor:pointer;
-  font-weight:700;
-  color:var(--accent);
-}
-
-details[open] summary{
-  margin-bottom:8px;
-}
-
   </style>
 </head>
 
@@ -132,12 +124,11 @@ const DATA = [
     d:"미국 주간 원유 수급 핵심(가격 반응 1순위)",
     u:"https://www.eia.gov/petroleum/supply/weekly/",
     tips:[
-      "Crude Inventories: 예상 대비 증감이 핵심(서프라이즈 체크).",
-      "Cushing 재고: WTI 민감도↑ (급감=롱 우호).",
-      "Gasoline/Distillate: 제품재고도 같이 줄면 실수요 강함.",
-      "Refinery Utilization: 가동률↑인데 재고↑면 과잉 신호.",
-      "Exports/Imports: 수출로 빠진 재고는 일시 효과일 수 있음.",
-      "4-week average로 노이즈 제거(스윙 필수)."
+      "Crude Inventories: 예상 대비 증감이 핵심.",
+      "Cushing 재고: WTI 민감도↑.",
+      "제품재고 동반 감소 시 실수요 강함.",
+      "정제 가동률과 재고 방향 함께 체크.",
+      "4주 평균으로 노이즈 제거."
     ]
   },
   {
@@ -145,35 +136,30 @@ const DATA = [
     d:"WTI(CL) 선물 구조·만기·롤 체크",
     u:"https://www.cmegroup.com/markets/energy/crude-oil/light-sweet-crude.html",
     tips:[
-      "Contract specs(틱/시간/정산) 먼저 확인.",
-      "Active month 이동 시점 체크.",
-      "백워데이션=수급 타이트 / 콘탱고=공급 여유.",
-      "만기 주엔 변동성 확대 주의.",
-      "근월↔차월 분위기로 수급 체감."
+      "Active month 이동 시점 확인.",
+      "백워=수급 타이트 / 콘탱고=여유.",
+      "만기 주 변동성 주의.",
+      "근월·차월 분위기로 수급 체감."
     ]
   },
   {
     t:"ICE Brent Futures",
-    d:"글로벌 프리미엄(지정학·해외 수요) 필터",
+    d:"글로벌 프리미엄 필터",
     u:"https://www.ice.com/products/219/brent-crude-futures",
     tips:[
-      "Brent는 글로벌 리스크에 민감.",
-      "Brent 강세=WTI 롱 필터 우호.",
-      "WTI만 강하면 미국 이벤트성 가능성.",
-      "절대가격보다 상대강도 중요.",
-      "Brent 선행 여부 체크."
+      "지정학·해외 수요 민감.",
+      "Brent 강세=WTI 롱 우호.",
+      "상대강도 관찰."
     ]
   },
   {
     t:"Baker Hughes Rig Count",
-    d:"공급 사이클 판단(중기·장기)",
+    d:"공급 사이클(중기)",
     u:"https://rigcount.bakerhughes.com/",
     tips:[
-      "단기 변동은 무시.",
-      "2~3개월 추세가 핵심.",
-      "Rig↑ 지속=중기 상단 압력.",
-      "Rig↓ 지속=중기 하단 지지.",
-      "가격과 반대면 레짐 변화 신호."
+      "2~3개월 추세만 의미.",
+      "Rig↑ 지속=상단 압력.",
+      "Rig↓ 지속=하단 지지."
     ]
   },
   {
@@ -181,47 +167,9 @@ const DATA = [
     d:"포지션 과열/언더 체크",
     u:"https://www.cftc.gov/dea/futures/petroleum_sf.htm",
     tips:[
-      "Managed Money 포지션 집중.",
-      "롱 과열 시 추격 금지.",
-      "롱 축소 후 반등 시 탄력.",
-      "방향 예측보다 리스크 관리용.",
-      "주간 필터로 사용."
-    ]
-  },
-  {
-    t:"FRED WTI Price",
-    d:"장기 가격 구간·레짐 기준",
-    u:"https://fred.stlouisfed.org/series/DCOILWTICO",
-    tips:[
-      "월봉·주봉 박스 확인.",
-      "레짐 전환 구간 파악.",
-      "고점권/저점권 판단.",
-      "장기선 위·아래 체크.",
-      "스윙 기준 틀 제공."
-    ]
-  },
-  {
-    t:"IEA Oil Market Report",
-    d:"글로벌 수요·공급 전망",
-    u:"https://www.iea.org/data-and-statistics/data-product/oil-market-report-omr",
-    tips:[
-      "수요 전망 변화에 주목.",
-      "공급 증가 지역 확인.",
-      "현재보다 미래 수급 중요.",
-      "전망치 수정 폭 체크.",
-      "월간 방향성 필터."
-    ]
-  },
-  {
-    t:"OPEC MOMR",
-    d:"감산·증산 정책 메시지",
-    u:"https://www.opec.org/monthly-oil-market-report.html",
-    tips:[
-      "정책 방향이 핵심.",
-      "쿼터 변화 체크.",
-      "실제 생산량(컴플라이언스).",
-      "IEA와 차이 비교.",
-      "상·하단 재료로 활용."
+      "투기 포지션 쏠림 확인.",
+      "과열 시 추격 금지.",
+      "리스크 관리용 필터."
     ]
   }
 ];
@@ -231,7 +179,6 @@ const qInput = document.getElementById("q");
 
 function render(){
   const q = qInput.value.toLowerCase();
-
   grid.innerHTML = DATA
     .filter(x => (x.t + x.d + x.tips.join(" ")).toLowerCase().includes(q))
     .map(x => `
@@ -250,15 +197,13 @@ function render(){
           <a href="${x.u}" target="_blank" rel="noopener">↗ 바로가기</a>
         </div>
       </div>
-    `)
-    .join("");
+    `).join("");
 }
 
 qInput.addEventListener("input", render);
 render();
 </script>
 
-<!-- Service Worker -->
 <script>
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("/Oil/sw.js");
