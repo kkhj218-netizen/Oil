@@ -1,4 +1,4 @@
-const CACHE = "jh-oil-hub-v1";
+const CACHE = "jh-oil-hub-v1"; // 숫자 +1
 const ASSETS = [
   "/Oil/",
   "/Oil/index.html",
