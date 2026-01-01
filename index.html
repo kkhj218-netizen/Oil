@@ -19,6 +19,7 @@
       --line:rgba(255,255,255,.08);
       --accent:#7aa2ff;
     }
+    *{box-sizing:border-box}
     body{
       margin:0;
       background:var(--bg);
@@ -27,41 +28,82 @@
     }
     .wrap{max-width:1120px;margin:auto;padding:24px}
     header{
-      display:flex;justify-content:space-between;align-items:center;
-      padding:16px;border-radius:16px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:16px;
+      border-radius:16px;
       border:1px solid var(--line);
-      background:#111936;
+      background:var(--card);
     }
     h1{margin:0;font-size:20px}
     .search{margin-top:14px}
     input{
-      width:100%;padding:12px;border-radius:12px;
+      width:100%;
+      padding:12px;
+      border-radius:12px;
       border:1px solid var(--line);
-      background:#0b1020;color:var(--text);
+      background:var(--bg);
+      color:var(--text);
+      font-size:14px;
     }
-    .grid{margin-top:18px;display:grid;gap:14px}
-    @media(min-width:900px){.grid{grid-template-columns:1fr 1fr}}
+    .grid{
+      margin-top:18px;
+      display:grid;
+      gap:14px;
+    }
+    @media(min-width:900px){
+      .grid{grid-template-columns:1fr 1fr}
+    }
     .card{
-      padding:16px;border-radius:16px;
-      background:#111936;border:1px solid var(--line);
+      padding:16px;
+      border-radius:16px;
+      background:var(--card);
+      border:1px solid var(--line);
     }
-    .card h3{margin:0 0 6px}
-    .card p{margin:0 0 8px;color:var(--muted);font-size:14px}
-    a{color:var(--accent);text-decoration:none;font-weight:600}
+    .card h3{
+      margin:0 0 6px;
+      font-size:16px;
+    }
+    .card p{
+      margin:0 0 8px;
+      color:var(--muted);
+      font-size:14px;
+    }
+    details summary{
+      cursor:pointer;
+      font-weight:700;
+      color:var(--accent);
+      margin-top:8px;
+    }
+    details ul{
+      margin:10px 0 0 18px;
+      padding:0;
+      color:var(--muted);
+      line-height:1.6;
+      font-size:13px;
+    }
+    a{
+      color:var(--accent);
+      text-decoration:none;
+      font-weight:600;
+    }
   </style>
 </head>
 
 <body>
 <div class="wrap">
+
   <header>
     <h1>🛢 JH Oil Hub</h1>
   </header>
 
   <div class="search">
-    <input id="q" placeholder="EIA, WTI, Brent, 재고, COT..." oninput="render()" />
+    <input id="q" placeholder="EIA, WTI, Brent, 재고, COT…" />
   </div>
 
   <div class="grid" id="grid"></div>
+
 </div>
 
 <script>
@@ -75,130 +117,131 @@ const DATA = [
       "Cushing 재고: WTI 민감도↑ (급감=롱 우호).",
       "Gasoline/Distillate: 제품재고도 같이 줄면 실수요 강함.",
       "Refinery Utilization: 가동률↑인데 재고↑면 과잉 신호.",
-      "Exports/Imports: 수출로 빠진 재고는 일시 효과일 수 있어 재확인.",
+      "Exports/Imports: 수출로 빠진 재고는 일시 효과일 수 있음.",
       "4-week average로 노이즈 제거(스윙 필수)."
     ]
   },
   {
     t:"CME WTI Futures",
-    d:"WTI(CL) 선물 구조/만기/롤 체크용",
+    d:"WTI(CL) 선물 구조·만기·롤 체크",
     u:"https://www.cmegroup.com/markets/energy/crude-oil/light-sweet-crude.html",
     tips:[
-      "Contract specs(틱/시간/정산) 먼저 확정 → 손익 계산 오류 방지.",
-      "Active month 확인: 만기 임박 시 거래 중심 월물이 바뀜.",
-      "Term structure 감각: 백워(타이트) vs 콘탱고(여유).",
-      "Final trading day/롤 기간엔 변동성·왜곡 주의.",
-      "근월↔차월 분위기만 봐도 수급 체감이 잡힘."
+      "Contract specs(틱/시간/정산) 먼저 확인.",
+      "Active month 이동 시점 체크.",
+      "백워데이션=수급 타이트 / 콘탱고=공급 여유.",
+      "만기 주엔 변동성 확대 주의.",
+      "근월↔차월 분위기로 수급 체감."
     ]
   },
   {
     t:"ICE Brent Futures",
-    d:"글로벌 프리미엄(지정학/해상/수요) 필터",
+    d:"글로벌 프리미엄(지정학·해외 수요) 필터",
     u:"https://www.ice.com/products/219/brent-crude-futures",
     tips:[
-      "Brent는 지정학/해상 운송 리스크에 더 민감.",
-      "Brent가 WTI보다 강하면 → WTI 롱 필터 우호.",
-      "WTI만 강하고 Brent 둔하면 → 미국 이벤트성/추격 금지 쪽.",
-      "절대가격보다 ‘WTI 대비 상대 강도’가 핵심.",
-      "이벤트 때 Brent가 먼저 튀면 리스크 프리미엄 ON."
+      "Brent는 글로벌 리스크에 민감.",
+      "Brent 강세=WTI 롱 필터 우호.",
+      "WTI만 강하면 미국 이벤트성 가능성.",
+      "절대가격보다 상대강도 중요.",
+      "Brent 선행 여부 체크."
     ]
   },
   {
     t:"Baker Hughes Rig Count",
-    d:"공급 사이클(느린 지표) — 스윙/장기용",
+    d:"공급 사이클 판단(중기·장기)",
     u:"https://rigcount.bakerhughes.com/",
     tips:[
-      "1~2주 변화는 노이즈, 2~3개월 추세로 판단.",
-      "Rig↑ 지속 → 수개월 뒤 생산 증가 기대(상단 압력).",
-      "Rig↓ 지속 → 공급 둔화 기대(하단 지지).",
-      "가격↑인데 Rig↓면 공급이 못 따라오는 강세 가능.",
-      "매매 타이밍보다 ‘레짐’ 판단에 쓰는 게 정답."
+      "단기 변동은 무시.",
+      "2~3개월 추세가 핵심.",
+      "Rig↑ 지속=중기 상단 압력.",
+      "Rig↓ 지속=중기 하단 지지.",
+      "가격과 반대면 레짐 변화 신호."
     ]
   },
   {
     t:"CFTC COT Petroleum",
-    d:"포지션 쏠림/과열 체크(리스크 관리용)",
+    d:"포지션 과열/언더 체크",
     u:"https://www.cftc.gov/dea/futures/petroleum_sf.htm",
     tips:[
-      "Managed Money(투기) 롱/숏 쏠림을 먼저 봐.",
-      "롱 과열이면 호재에도 둔화/익절 당김 구간이 잦음.",
-      "롱이 많이 빠진 상태에서 수급 개선 → 숏커버 탄력 구간.",
-      "방향 예측보다 ‘추격 금지/포지션 축소’에 효과적.",
-      "주간 데이터라 ‘필터’로만 써도 충분."
+      "Managed Money 포지션 집중.",
+      "롱 과열 시 추격 금지.",
+      "롱 축소 후 반등 시 탄력.",
+      "방향 예측보다 리스크 관리용.",
+      "주간 필터로 사용."
     ]
   },
   {
     t:"FRED WTI Price",
-    d:"장기 구간/레짐(월봉·주봉) 기준선",
+    d:"장기 가격 구간·레짐 기준",
     u:"https://fred.stlouisfed.org/series/DCOILWTICO",
     tips:[
-      "월봉/주봉 박스(고점권·저점권)를 먼저 그려.",
-      "레짐 전환(침체/전쟁/인플레) 때 구간이 확 바뀜.",
-      "현재가가 과거 대비 어디쯤인지로 포지션 크기 조절.",
-      "장기선(예: 200주) 위/아래로 큰 편향 판단.",
-      "스윙 = 장기구간(틀) + EIA(촉매) + 가격(진입)."
+      "월봉·주봉 박스 확인.",
+      "레짐 전환 구간 파악.",
+      "고점권/저점권 판단.",
+      "장기선 위·아래 체크.",
+      "스윙 기준 틀 제공."
     ]
   },
   {
     t:"IEA Oil Market Report",
-    d:"글로벌 수요/공급 ‘스토리’(월간 전망)",
+    d:"글로벌 수요·공급 전망",
     u:"https://www.iea.org/data-and-statistics/data-product/oil-market-report-omr",
     tips:[
-      "수요 전망 상향/하향 ‘변화’가 시장에 중요.",
-      "비OPEC vs OPEC 공급이 어디서 늘/줄 체크.",
-      "현재보다 ‘앞으로 몇 달 타이트/여유’가 핵심.",
-      "전망치 ‘리비전 폭’이 클수록 영향↑.",
-      "WTI 단일도 월간으로 롱/숏 편향 계절을 잡아줌."
+      "수요 전망 변화에 주목.",
+      "공급 증가 지역 확인.",
+      "현재보다 미래 수급 중요.",
+      "전망치 수정 폭 체크.",
+      "월간 방향성 필터."
     ]
   },
   {
     t:"OPEC MOMR",
-    d:"감산/증산 메시지(정책 방향) 확인",
+    d:"감산·증산 정책 메시지",
     u:"https://www.opec.org/monthly-oil-market-report.html",
     tips:[
-      "핵심은 ‘현재’보다 정책 방향(감산 유지/완화).",
-      "쿼터/가이던스 변화는 수주~수개월 레짐 변화 유발.",
-      "컴플라이언스: 실제 생산이 목표와 얼마나 다른지 체크.",
-      "IEA와 전망이 다를 때는 ‘변화’에만 반응하면 됨.",
-      "진입은 가격으로, OPEC은 상·하단 재료로."
+      "정책 방향이 핵심.",
+      "쿼터 변화 체크.",
+      "실제 생산량(컴플라이언스).",
+      "IEA와 차이 비교.",
+      "상·하단 재료로 활용."
     ]
   }
 ];
 
 const grid = document.getElementById("grid");
+const qInput = document.getElementById("q");
 
 function render(){
-  const q = document.getElementById("q").value.toLowerCase();
+  const q = qInput.value.toLowerCase();
 
   grid.innerHTML = DATA
-    .filter(x => (x.t + x.d).toLowerCase().includes(q))
+    .filter(x => (x.t + x.d + x.tips.join(" ")).toLowerCase().includes(q))
     .map(x => `
       <div class="card">
         <h3>${x.t}</h3>
         <p>${x.d}</p>
 
-        <details style="margin-top:10px;">
-          <summary style="cursor:pointer; font-weight:700; color: var(--accent);">
-            ✅ 보는 법(핵심 체크)
-          </summary>
-          <ul style="margin:10px 0 0 18px; color: var(--muted); line-height:1.6;">
+        <details>
+          <summary>✅ 보는 법 (핵심 체크)</summary>
+          <ul>
             ${x.tips.map(t => `<li>${t}</li>`).join("")}
           </ul>
         </details>
 
         <div style="margin-top:10px;">
-          <a href="${x.u}" target="_blank">↗ 바로가기</a>
+          <a href="${x.u}" target="_blank" rel="noopener">↗ 바로가기</a>
         </div>
       </div>
-    `).join("");
+    `)
+    .join("");
 }
+
+qInput.addEventListener("input", render);
 render();
 </script>
 
-
 <!-- Service Worker -->
 <script>
-if("serviceWorker" in navigator){
+if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("/Oil/sw.js");
 }
 </script>
