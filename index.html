@@ -3,8 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="description" content="WTI/Brent 오일 트레이딩 & 투자에 유용한 데이터/리포트/차트 링크를 한 곳에 모은 MVP 링크 허브" />
-  <title>Oil / Macro Link Hub (MVP)</title>
+  <meta name="description" content="WTI/Brent 오일 트레이딩 & 투자에 필요한 모든 핵심 자료를 모은 JH Oil Hub" />
+  <title>JH Oil Hub</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="/Oil/manifest.webmanifest">
+  <meta name="theme-color" content="#0b1020">
+
   <style>
     :root{
       --bg:#0b1020;
@@ -12,118 +17,86 @@
       --muted:#93a4c7;
       --text:#e9eeff;
       --line:rgba(255,255,255,.08);
-      --chip:rgba(255,255,255,.08);
       --accent:#7aa2ff;
-      --ok:#50fa7b;
-      --warn:#ffb86c;
-      --bad:#ff5555;
-      --shadow: 0 14px 50px rgba(0,0,0,.35);
-      --radius: 18px;
     }
-    [data-theme="light"]{
-      --bg:#f6f7fb;
-      --card:#ffffff;
-      --muted:#52607a;
-      --text:#0f172a;
-      --line:rgba(15,23,42,.10);
-      --chip:rgba(15,23,42,.06);
-      --accent:#2b59ff;
-      --shadow: 0 14px 50px rgba(0,0,0,.08);
-    }
-    *{box-sizing:border-box}
     body{
       margin:0;
-      background: radial-gradient(900px 600px at 10% 0%, rgba(122,162,255,.18), transparent 60%),
-                  radial-gradient(900px 600px at 90% 10%, rgba(80,250,123,.12), transparent 55%),
-                  var(--bg);
+      background:var(--bg);
       color:var(--text);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", sans-serif;
+      font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif;
     }
-    .wrap{max-width:1120px;margin:0 auto;padding:28px 18px}
+    .wrap{max-width:1120px;margin:auto;padding:24px}
     header{
-      display:flex;justify-content:space-between;gap:12px;
-      padding:18px;border-radius:18px;
+      display:flex;justify-content:space-between;align-items:center;
+      padding:16px;border-radius:16px;
       border:1px solid var(--line);
-      background:rgba(255,255,255,.04);
+      background:#111936;
     }
     h1{margin:0;font-size:20px}
-    .btn{padding:8px 12px;border-radius:12px;border:1px solid var(--line);background:none;color:var(--text);cursor:pointer}
-    .search{margin-top:14px;display:flex;gap:10px}
-    input{flex:1;padding:10px;border-radius:12px;border:1px solid var(--line);background:none;color:var(--text)}
-    .pillbar{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
-    .pill{padding:6px 10px;border-radius:999px;border:1px solid var(--line);cursor:pointer;font-size:12px}
-    .pill[data-active="true"]{border-color:var(--accent)}
-    .grid{margin-top:16px;display:grid;gap:14px}
+    .search{margin-top:14px}
+    input{
+      width:100%;padding:12px;border-radius:12px;
+      border:1px solid var(--line);
+      background:#0b1020;color:var(--text);
+    }
+    .grid{margin-top:18px;display:grid;gap:14px}
     @media(min-width:900px){.grid{grid-template-columns:1fr 1fr}}
     .card{
-      padding:16px;border-radius:18px;
-      border:1px solid var(--line);
-      background:var(--card)
+      padding:16px;border-radius:16px;
+      background:#111936;border:1px solid var(--line);
     }
-    .badge{font-size:11px;padding:4px 8px;border-radius:999px;border:1px solid var(--line)}
-    .ok{color:var(--ok)} .warn{color:var(--warn)}
-    .links a{display:inline-block;margin-top:8px;margin-right:6px;text-decoration:none;color:var(--accent)}
+    .card h3{margin:0 0 6px}
+    .card p{margin:0 0 8px;color:var(--muted);font-size:14px}
+    a{color:var(--accent);text-decoration:none;font-weight:600}
   </style>
 </head>
+
 <body>
 <div class="wrap">
-<header>
-  <h1>Oil / Macro Link Hub (MVP)</h1>
-  <button class="btn" onclick="toggleTheme()">🌓</button>
-</header>
+  <header>
+    <h1>🛢 JH Oil Hub</h1>
+  </header>
 
-<div class="search">
-  <input id="q" placeholder="EIA, 재고, WTI, Brent, COT..." oninput="render()" />
+  <div class="search">
+    <input id="q" placeholder="EIA, WTI, Brent, 재고, COT..." oninput="render()" />
+  </div>
+
+  <div class="grid" id="grid"></div>
 </div>
-
-<div class="pillbar" id="pillbar"></div>
-<div class="grid" id="grid"></div>
 
 <script>
 const DATA = [
-  {title:"EIA Weekly Petroleum Status Report",cat:"재고/수급",desc:"미국 주간 원유 수급 핵심",links:["https://www.eia.gov/petroleum/supply/weekly/"]},
-  {title:"CME WTI Futures",cat:"선물",desc:"WTI(CL) 상품 정보",links:["https://www.cmegroup.com/markets/energy/crude-oil/light-sweet-crude.html"]},
-  {title:"ICE Brent Futures",cat:"선물",desc:"Brent 선물 정보",links:["https://www.ice.com/products/219/brent-crude-futures"]},
-  {title:"Baker Hughes Rig Count",cat:"공급",desc:"미국 리그 카운트",links:["https://rigcount.bakerhughes.com/"]},
-  {title:"CFTC COT Petroleum",cat:"포지션",desc:"원유 포지션 데이터",links:["https://www.cftc.gov/dea/futures/petroleum_sf.htm"]},
-  {title:"FRED WTI Price",cat:"가격",desc:"WTI 장기 가격",links:["https://fred.stlouisfed.org/series/DCOILWTICO"]},
-  {title:"IEA Oil Market Report",cat:"리포트",desc:"글로벌 원유 수급 전망",links:["https://www.iea.org/data-and-statistics/data-product/oil-market-report-omr"]},
-  {title:"OPEC MOMR",cat:"리포트",desc:"OPEC 월간 리포트",links:["https://www.opec.org/monthly-oil-market-report.html"]}
+  {t:"EIA Weekly Petroleum Status Report",d:"미국 주간 원유 수급 핵심",u:"https://www.eia.gov/petroleum/supply/weekly/"},
+  {t:"CME WTI Futures",d:"WTI(CL) 선물 상품 정보",u:"https://www.cmegroup.com/markets/energy/crude-oil/light-sweet-crude.html"},
+  {t:"ICE Brent Futures",d:"Brent 선물 상품 정보",u:"https://www.ice.com/products/219/brent-crude-futures"},
+  {t:"Baker Hughes Rig Count",d:"미국 시추 리그 카운트",u:"https://rigcount.bakerhughes.com/"},
+  {t:"CFTC COT Petroleum",d:"원유 포지션(COT)",u:"https://www.cftc.gov/dea/futures/petroleum_sf.htm"},
+  {t:"FRED WTI Price",d:"WTI 장기 가격 데이터",u:"https://fred.stlouisfed.org/series/DCOILWTICO"},
+  {t:"IEA Oil Market Report",d:"글로벌 원유 수급 전망",u:"https://www.iea.org/data-and-statistics/data-product/oil-market-report-omr"},
+  {t:"OPEC MOMR",d:"OPEC 월간 오일 리포트",u:"https://www.opec.org/monthly-oil-market-report.html"}
 ];
 
-let category="전체";
 const grid=document.getElementById("grid");
-const pillbar=document.getElementById("pillbar");
-
-function toggleTheme(){
-  document.documentElement.toggleAttribute("data-theme");
-}
-
-function renderPills(){
-  const cats=["전체",...new Set(DATA.map(d=>d.cat))];
-  pillbar.innerHTML=cats.map(c=>`<span class="pill" data-active="${c===category}" onclick="category='${c}';render()">${c}</span>`).join("");
-}
 
 function render(){
   const q=document.getElementById("q").value.toLowerCase();
-  grid.innerHTML=DATA.filter(d=>{
-    return (category==="전체"||d.cat===category) &&
-           (d.title+d.desc).toLowerCase().includes(q);
-  }).map(d=>`
-    <div class="card">
-      <span class="badge">${d.cat}</span>
-      <h3>${d.title}</h3>
-      <p>${d.desc}</p>
-      <div class="links">
-        ${d.links.map(l=>`<a href="${l}" target="_blank">↗ 링크</a>`).join("")}
-      </div>
-    </div>
-  `).join("");
+  grid.innerHTML=DATA.filter(x=>(x.t+x.d).toLowerCase().includes(q))
+    .map(x=>`
+      <div class="card">
+        <h3>${x.t}</h3>
+        <p>${x.d}</p>
+        <a href="${x.u}" target="_blank">↗ 바로가기</a>
+      </div>`).join("");
 }
-
-renderPills();
 render();
 </script>
-</div>
+
+<!-- Service Worker -->
+<script>
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.register("/Oil/sw.js");
+}
+</script>
+
 </body>
 </html>
